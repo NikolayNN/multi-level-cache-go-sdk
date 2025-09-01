@@ -18,6 +18,18 @@ const (
 	endpointEvictAll = "/api/v1/cache/evict_all"
 )
 
+type getReq struct {
+	Requests []CacheId `json:"requests"`
+}
+
+type putReq[T any] struct {
+	Requests []CacheEntry[T] `json:"requests"`
+}
+
+type evictReq struct {
+	Requests []CacheId `json:"requests"`
+}
+
 // Client is an HTTP client for the multi-level cache service.
 type Client struct {
 	baseURL       string
@@ -61,7 +73,8 @@ func NewWithOptions(baseURL string, gzipThreshold int,
 // GetAll fetches multiple entries from the cache and unmarshals the values into
 // the provided generic type.
 func GetAll[T any](c *Client, ctx context.Context, ids []CacheId) ([]CacheEntryHit[T], error) {
-	body, err := json.Marshal(ids)
+	getReq := getReq{Requests: ids}
+	body, err := json.Marshal(getReq)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +93,8 @@ func GetAll[T any](c *Client, ctx context.Context, ids []CacheId) ([]CacheEntryH
 
 // PutAll stores multiple entries in the cache.
 func (c *Client) PutAll(ctx context.Context, entries []CacheEntry[any]) error {
-	body, err := json.Marshal(entries)
+	putReq := putReq[any]{Requests: entries}
+	body, err := json.Marshal(putReq)
 	if err != nil {
 		return err
 	}
@@ -94,7 +108,8 @@ func (c *Client) PutAll(ctx context.Context, entries []CacheEntry[any]) error {
 
 // EvictAll removes multiple entries from the cache.
 func (c *Client) EvictAll(ctx context.Context, ids []CacheId) error {
-	body, err := json.Marshal(ids)
+	evictReq := evictReq{Requests: ids}
+	body, err := json.Marshal(evictReq)
 	if err != nil {
 		return err
 	}

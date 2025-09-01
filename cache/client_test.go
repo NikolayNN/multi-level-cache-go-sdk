@@ -33,7 +33,7 @@ func TestGetAll(t *testing.T) {
 			t.Errorf("content type: %s", ct)
 		}
 		body, _ := io.ReadAll(r.Body)
-		expectedBody := `[{"c":"users","k":"1"},{"c":"users","k":"2"}]`
+		expectedBody := `{"requests":[{"c":"users","k":"1"},{"c":"users","k":"2"}]}`
 		if strings.TrimSpace(string(body)) != expectedBody {
 			t.Errorf("body = %s", body)
 		}
@@ -61,7 +61,7 @@ func TestPutAll(t *testing.T) {
 			t.Errorf("method: %s", r.Method)
 		}
 		body, _ := io.ReadAll(r.Body)
-		expectedBody := `[{"c":"users","k":"1","v":{"id":1,"name":"Alice"}}]`
+		expectedBody := `{"requests":[{"c":"users","k":"1","v":{"id":1,"name":"Alice"}}]}`
 		if strings.TrimSpace(string(body)) != expectedBody {
 			t.Errorf("body = %s", body)
 		}
@@ -85,7 +85,7 @@ func TestEvictAll(t *testing.T) {
 			t.Errorf("method: %s", r.Method)
 		}
 		body, _ := io.ReadAll(r.Body)
-		expectedBody := `[{"c":"users","k":"1"}]`
+		expectedBody := `{"requests":[{"c":"users","k":"1"}]}`
 		if strings.TrimSpace(string(body)) != expectedBody {
 			t.Errorf("body = %s", body)
 		}
